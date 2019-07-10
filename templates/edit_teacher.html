@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block css %}
+
+{% endblock %}
+
+
+{% block content %}
+    <h1>编辑老师</h1>
+    <form action="/edit_teacher-{{ obj.id }}.html" method="POST">
+        <input style="display: none" type="text" id="nid" value="{{ obj.id }}" />
+        <p>
+            老师姓名：<input name="name" type="text" value="{{ obj.name }}" />
+        </p>
+        <p>
+            已管理班级
+            <select id="sel" name="cls" multiple>
+                {% for row in obj_cls_list %}
+                    <option value="{{ row.0 }}">{{ row.1 }}</option>
+                {% endfor %}
+            </select>
+            未管理班级：
+            <select id="none" multiple>
+                {% for row in cls_list %}
+                    <option value="{{ row.id }}">{{ row.caption }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <div>
+            <a id="removeCls"> >> </a>
+            <a id="addCls"> << </a>
+        </div>
+        <input id="submit_form" type="submit" value="提交" />
+    </form>
+{% endblock %}
+
+
+{% block js %}
+    <script>
+        $(function () {
+            $('#menu_teacher').addClass('active');
+            bindRemoveCls();
+            bindAddCls();
+            bindSubmitForm();
+        });
+        function bindSubmitForm(){
+            $('#submit_form').click(function () {
+                // 让select中全选中
+                $('#sel').children().each(function () {
+                    $(this).prop('selected', true);
+                })
+            })
+        }
+
+        function bindRemoveCls() {
+            $('#removeCls').click(function () {
+                var options = $('#sel')[0].selectedOptions;
+                while(options.length>0){
+                    $(options[0]).appendTo('#none');
+                }
+
+            })
+        }
+
+        function bindAddCls() {
+            $('#addCls').click(function () {
+                var options = $('#none')[0].selectedOptions;
+                while(options.length>0){
+                    $(options[0]).appendTo('#sel');
+                }
+
+            })
+        }
+    </script>
+{% endblock %}
